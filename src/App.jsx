@@ -1,32 +1,49 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import './App.css'
+import notifications from './notifications.js'
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <div className="App">
+  const [notificationData, setNotificationData] = useState(notifications)
+  
+  // delete a individual noti
+const handleDelete = (id) => {
+  const newNotificationData = notificationData.filter((notification) => notification.id !== id)
+    setNotificationData(newNotificationData)
+  } 
+  
+  // delete all noti's
+  const handleDeleteAll = () => {
+    setNotificationData([])
+  }
+  
+  
+  const NotificationList = ({children}) => {
+    return (
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        {children}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+    )
+  }
+  
+  const Notification = ({id, name, message, handleDelete}) => {
+    return (
+      <div>
+        <h1>{name}</h1>
+        <p>{message}</p>
+        <button onClick={()=>{handleDelete(id)}}>Delete</button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      )
+  }
+  
+  return (
+    <div>
+      <NotificationList>
+        <span>({notificationData.length})</span>
+        {notificationData.map((notification) => (
+          <Notification key={notification.id} name={notification.name} message={notification.message} handleDelete={()=>{handleDelete(notification.id)}}/>
+        ))}
+        {notificationData.length > 0 && <button onClick={handleDeleteAll}>Delete All</button>}
+      </NotificationList>
     </div>
   )
 }
